@@ -3,6 +3,6 @@
   "semi": false,
   "printWidth": 120,
   "trailingComma": "none",
-  "endOfLine": "lf",
+  "endOfLine": "auto",
   "bracketSameLine": true
 }
