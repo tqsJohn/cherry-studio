@@ -1,5 +1,5 @@
 import { CloseOutlined } from '@ant-design/icons'
-import { FileSearchOutlined, FolderOutlined, PictureOutlined, TranslationOutlined } from '@ant-design/icons'
+import { FileSearchOutlined, FolderOutlined, TranslationOutlined } from '@ant-design/icons'
 import {
   DragDropContext,
   Draggable,
@@ -111,7 +111,6 @@ const SidebarIconsManager: FC<SidebarIconsManagerProps> = ({
     () => ({
       assistants: <i className="iconfont icon-chat" />,
       agents: <i className="iconfont icon-business-smart-assistant" />,
-      paintings: <PictureOutlined style={{ fontSize: 14 }} />,
       translate: <TranslationOutlined />,
       minapp: <i className="iconfont icon-appstore" />,
       knowledge: <FileSearchOutlined />,

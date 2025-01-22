@@ -1,4 +1,4 @@
-import { FileSearchOutlined, FolderOutlined, PictureOutlined, TranslationOutlined } from '@ant-design/icons'
+import { FileSearchOutlined, FolderOutlined, TranslationOutlined } from '@ant-design/icons'
 import { isMac } from '@renderer/config/constant'
 import { isLocalAi, UserAvatar } from '@renderer/config/env'
 import { useTheme } from '@renderer/context/ThemeProvider'
@@ -97,7 +97,6 @@ const MainMenus: FC = () => {
   const iconMap = {
     assistants: <i className="iconfont icon-chat" />,
     agents: <i className="iconfont icon-business-smart-assistant" />,
-    paintings: <PictureOutlined style={{ fontSize: 16 }} />,
     translate: <TranslationOutlined />,
     minapp: <i className="iconfont icon-appstore" />,
     knowledge: <FileSearchOutlined />,
@@ -107,7 +106,6 @@ const MainMenus: FC = () => {
   const pathMap = {
     assistants: '/',
     agents: '/agents',
-    paintings: '/paintings',
     translate: '/translate',
     minapp: '/apps',
     knowledge: '/knowledge',
