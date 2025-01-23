@@ -10,6 +10,7 @@ import AisingaporeModelLogo from '@renderer/assets/images/models/aisingapore.png
 import AisingaporeModelLogoDark from '@renderer/assets/images/models/aisingapore_dark.png'
 import BaichuanModelLogo from '@renderer/assets/images/models/baichuan.png'
 import BaichuanModelLogoDark from '@renderer/assets/images/models/baichuan_dark.png'
+import BgeModelLogo from '@renderer/assets/images/models/bge.webp'
 import BigcodeModelLogo from '@renderer/assets/images/models/bigcode.webp'
 import BigcodeModelLogoDark from '@renderer/assets/images/models/bigcode_dark.webp'
 import ChatGLMModelLogo from '@renderer/assets/images/models/chatglm.png'
@@ -251,7 +252,8 @@ export function getModelLogo(modelId: string) {
     rakutenai: isLight ? RakutenaiModelLogo : RakutenaiModelLogoDark,
     ibm: isLight ? IbmModelLogo : IbmModelLogoDark,
     'google/': isLight ? GoogleModelLogo : GoogleModelLogoDark,
-    hugging: isLight ? HuggingfaceModelLogo : HuggingfaceModelLogoDark
+    hugging: isLight ? HuggingfaceModelLogo : HuggingfaceModelLogoDark,
+    'bge-': BgeModelLogo
   }
 
   for (const key in logoMap) {
@@ -758,6 +760,12 @@ export const SYSTEM_MODELS: Record<string, Model[]> = {
       provider: 'minimax',
       name: 'abab5.5s',
       group: 'abab5'
+    },
+    {
+      id: 'minimax-text-01',
+      provider: 'minimax',
+      name: 'minimax-01',
+      group: 'minimax-01'
     }
   ],
   hyperbolic: [

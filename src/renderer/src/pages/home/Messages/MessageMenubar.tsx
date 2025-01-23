@@ -13,6 +13,7 @@ import {
 } from '@ant-design/icons'
 import SelectModelPopup from '@renderer/components/Popups/SelectModelPopup'
 import TextEditPopup from '@renderer/components/Popups/TextEditPopup'
+import { TranslateLanguageOptions } from '@renderer/config/translate'
 import { modelGenerating } from '@renderer/hooks/useRuntime'
 import { EVENT_NAMES, EventEmitter } from '@renderer/services/EventService'
 import { translateText } from '@renderer/services/TranslateService'
@@ -29,11 +30,12 @@ interface Props {
   assistantModel?: Model
   model?: Model
   index?: number
+  isGrouped?: boolean
   isLastMessage: boolean
   isAssistantMessage: boolean
   setModel: (model: Model) => void
   onEditMessage?: (message: Message) => void
-  onDeleteMessage?: (message: Message) => void
+  onDeleteMessage?: (message: Message) => Promise<void>
   onGetMessages?: () => Message[]
 }
 
@@ -41,6 +43,7 @@ const MessageMenubar: FC<Props> = (props) => {
   const {
     message,
     index,
+    isGrouped,
     model,
     isLastMessage,
     isAssistantMessage,
@@ -83,7 +86,7 @@ const MessageMenubar: FC<Props> = (props) => {
         ...nextMessage,
         content: '',
         status: 'sending',
-        modelId: assistantModel?.id || model?.id,
+        model: assistantModel || model,
         translatedContent: undefined
       })
     }
@@ -92,23 +95,24 @@ const MessageMenubar: FC<Props> = (props) => {
       EventEmitter.emit(EVENT_NAMES.SEND_MESSAGE, { ...message, id: uuid() })
       onDeleteMessage?.(message)
     }
-  }, [assistantModel?.id, message, model?.id, onDeleteMessage, onGetMessages])
+  }, [assistantModel, message, model, onDeleteMessage, onGetMessages])
 
   const onEdit = useCallback(async () => {
     let resendMessage = false
 
     const editedText = await TextEditPopup.show({
       text: message.content,
-      children: (props) => (
-        <ReSendButton
-          icon={<i className="iconfont icon-ic_send" style={{ color: 'var(--color-primary)' }} />}
-          onClick={() => {
-            props.onOk?.()
-            resendMessage = true
-          }}>
-          {t('chat.resend')}
-        </ReSendButton>
-      )
+      children: (props) =>
+        message.role === 'user' ? (
+          <ReSendButton
+            icon={<i className="iconfont icon-ic_send" style={{ color: 'var(--color-primary)' }} />}
+            onClick={() => {
+              props.onOk?.()
+              resendMessage = true
+            }}>
+            {t('chat.resend')}
+          </ReSendButton>
+        ) : null
     })
 
     editedText && onEditMessage?.({ ...message, content: editedText })
@@ -124,8 +128,9 @@ const MessageMenubar: FC<Props> = (props) => {
       setIsTranslating(true)
 
       try {
-        const translatedText = await translateText(message.content, language)
-        onEditMessage?.({ ...message, translatedContent: translatedText })
+        await translateText(message.content, language, (text) =>
+          onEditMessage?.({ ...message, translatedContent: text })
+        )
       } catch (error) {
         console.error('Translation failed:', error)
         window.message.error({
@@ -167,21 +172,27 @@ const MessageMenubar: FC<Props> = (props) => {
     [message, onEdit, onNewBranch, t]
   )
 
-  const onDeleteAndRegenerate = async () => {
+  const onRegenerate = async () => {
     await modelGenerating()
     const selectedModel = await SelectModelPopup.show({ model })
     if (!selectedModel) return
 
-    onEditMessage?.({
+    const _message: Message = {
       ...message,
       content: '',
       reasoning_content: undefined,
       metrics: undefined,
       status: 'sending',
-      modelId: selectedModel.id || assistantModel?.id || model?.id,
       model: selectedModel,
-      translatedContent: undefined
-    })
+      translatedContent: undefined,
+      metadata: undefined
+    }
+
+    if (message.askId && message.model) {
+      return EventEmitter.emit(EVENT_NAMES.APPEND_MESSAGE, { ..._message, id: uuid() })
+    }
+
+    onEditMessage?.(_message)
   }
 
   const onUseful = useCallback(() => {
@@ -205,7 +216,7 @@ const MessageMenubar: FC<Props> = (props) => {
       </Tooltip>
       {isAssistantMessage && (
         <Tooltip title={t('common.regenerate')} mouseEnterDelay={0.8}>
-          <ActionButton className="message-action-button" onClick={onDeleteAndRegenerate}>
+          <ActionButton className="message-action-button" onClick={onRegenerate}>
             <SyncOutlined />
           </ActionButton>
         </Tooltip>
@@ -214,36 +225,11 @@ const MessageMenubar: FC<Props> = (props) => {
         <Dropdown
           menu={{
             items: [
-              {
-                label: '🇨🇳 ' + t('languages.chinese'),
-                key: 'translate-chinese',
-                onClick: () => handleTranslate('chinese')
-              },
-              {
-                label: '🇭🇰 ' + t('languages.chinese-traditional'),
-                key: 'translate-chinese-traditional',
-                onClick: () => handleTranslate('chinese-traditional')
-              },
-              {
-                label: '🇬🇧 ' + t('languages.english'),
-                key: 'translate-english',
-                onClick: () => handleTranslate('english')
-              },
-              {
-                label: '🇯🇵 ' + t('languages.japanese'),
-                key: 'translate-japanese',
-                onClick: () => handleTranslate('japanese')
-              },
-              {
-                label: '🇰🇷 ' + t('languages.korean'),
-                key: 'translate-korean',
-                onClick: () => handleTranslate('korean')
-              },
-              {
-                label: '🇷🇺 ' + t('languages.russian'),
-                key: 'translate-russian',
-                onClick: () => handleTranslate('russian')
-              },
+              ...TranslateLanguageOptions.map((item) => ({
+                label: item.emoji + ' ' + item.label,
+                key: item.value,
+                onClick: () => handleTranslate(item.value)
+              })),
               {
                 label: '✖ ' + t('translate.close'),
                 key: 'translate-close',
@@ -268,14 +254,16 @@ const MessageMenubar: FC<Props> = (props) => {
           </ActionButton>
         </Tooltip>
       )}
-
       <Popconfirm
+        disabled={isGrouped}
         title={t('message.message.delete.content')}
         okButtonProps={{ danger: true }}
         icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
         onConfirm={() => onDeleteMessage?.(message)}>
         <Tooltip title={t('common.delete')} mouseEnterDelay={1}>
-          <ActionButton className="message-action-button">
+          <ActionButton
+            className="message-action-button"
+            onClick={isGrouped ? () => onDeleteMessage?.(message) : undefined}>
             <DeleteOutlined />
           </ActionButton>
         </Tooltip>

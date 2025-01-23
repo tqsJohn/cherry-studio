@@ -62,8 +62,10 @@ export interface SettingsState {
   narrowMode: boolean
   enableQuickAssistant: boolean
   clickTrayToShowQuickAssistant: boolean
-  multiModelMessageStyle: 'horizontal' | 'vertical' | 'fold'
+  multiModelMessageStyle: MultiModelMessageStyle
 }
+
+export type MultiModelMessageStyle = 'horizontal' | 'vertical' | 'fold'
 
 const initialState: SettingsState = {
   showAssistants: true,
@@ -110,7 +112,7 @@ const initialState: SettingsState = {
   narrowMode: false,
   enableQuickAssistant: false,
   clickTrayToShowQuickAssistant: false,
-  multiModelMessageStyle: 'vertical'
+  multiModelMessageStyle: 'fold'
 }
 
 const settingsSlice = createSlice({
