@@ -3,12 +3,8 @@ import { HStack } from '@renderer/components/Layout'
 import { APP_NAME, AppLogo } from '@renderer/config/env'
 import { useTheme } from '@renderer/context/ThemeProvider'
 import { useRuntime } from '@renderer/hooks/useRuntime'
-import { useSettings } from '@renderer/hooks/useSettings'
-import { useAppDispatch } from '@renderer/store'
-import { setUpdateState } from '@renderer/store/runtime'
-import { setManualUpdateCheck } from '@renderer/store/settings'
 import { compareVersions, runAsyncFunction } from '@renderer/utils'
-import { Avatar, Button, Progress, Row, Switch, Tag } from 'antd'
+import { Avatar, Button, Progress, Row, Tag } from 'antd'
 import { debounce } from 'lodash'
 import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -20,26 +16,27 @@ import { SettingContainer, SettingDivider, SettingGroup, SettingRow, SettingTitl
 const AboutSettings: FC = () => {
   const [version, setVersion] = useState('')
   const { t } = useTranslation()
-  const { manualUpdateCheck } = useSettings()
+  // const { manualUpdateCheck } = useSettings()
   const { theme } = useTheme()
-  const dispatch = useAppDispatch()
+  // const dispatch = useAppDispatch()
   const { update } = useRuntime()
 
   const onCheckUpdate = debounce(
     async () => {
-      if (update.checking || update.downloading) {
-        return
-      }
+      console.log('onCheckUpdate')
+      // if (update.checking || update.downloading) {
+      //   return
+      // }
 
-      dispatch(setUpdateState({ checking: true }))
+      // dispatch(setUpdateState({ checking: true }))
 
-      try {
-        await window.api.checkForUpdate()
-      } catch (error) {
-        window.message.error(t('settings.about.updateError'))
-      }
+      // try {
+      //   await window.api.checkForUpdate()
+      // } catch (error) {
+      //   window.message.error(t('settings.about.updateError'))
+      // }
 
-      dispatch(setUpdateState({ checking: false }))
+      // dispatch(setUpdateState({ checking: false }))
     },
     2000,
     { leading: true, trailing: false }
@@ -97,10 +94,10 @@ const AboutSettings: FC = () => {
           </CheckUpdateButton>
         </AboutHeader>
         <SettingDivider />
-        <SettingRow>
+        {/* <SettingRow>
           <SettingRowTitle>{t('settings.general.manually_check_update.title')}</SettingRowTitle>
           <Switch value={manualUpdateCheck} onChange={(v) => dispatch(setManualUpdateCheck(v))} />
-        </SettingRow>
+        </SettingRow> */}
       </SettingGroup>
       {hasNewVersion && update.info && (
         <SettingGroup theme={theme}>

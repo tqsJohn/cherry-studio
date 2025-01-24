@@ -87,7 +87,7 @@ const initialState: SettingsState = {
   pasteLongTextAsFile: false,
   pasteLongTextThreshold: 1500,
   clickAssistantToShowTopic: false,
-  manualUpdateCheck: false,
+  manualUpdateCheck: true,
   renderInputMessageAsMarkdown: false,
   codeShowLineNumbers: false,
   codeCollapsible: false,
