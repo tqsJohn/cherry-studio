@@ -1021,7 +1021,8 @@ export const SYSTEM_MODELS: Record<string, Model[]> = {
       name: 'Gemma 7B',
       group: 'Gemma'
     }
-  ]
+  ],
+  sinbon: []
 }
 
 export const TEXT_TO_IMAGES_MODELS = [

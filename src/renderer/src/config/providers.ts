@@ -94,6 +94,8 @@ export function getProviderLogo(providerId: string) {
       return JinaProviderLogo
     case 'qwenlm':
       return QwenLMProviderLogo
+    case 'sinbon':
+      return OpenAiProviderLogo
     default:
       return undefined
   }
@@ -431,6 +433,11 @@ export const PROVIDER_CONFIG = {
       apiKey: 'https://chat.qwenlm.ai',
       docs: 'https://chat.qwenlm.ai',
       models: 'https://chat.qwenlm.ai'
+    }
+  },
+  sinbon: {
+    api: {
+      url: 'https://yunwu.ai'
     }
   }
 }

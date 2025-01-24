@@ -246,23 +246,27 @@ const ProviderSetting: FC<Props> = ({ provider: _provider }) => {
           <SettingHelpText>{t('settings.provider.api_key.tip')}</SettingHelpText>
         </SettingHelpTextRow>
       )}
-      <SettingSubtitle>{t('settings.provider.api_host')}</SettingSubtitle>
-      <Space.Compact style={{ width: '100%', marginTop: 5 }}>
-        <Input
-          value={apiHost}
-          placeholder={t('settings.provider.api_host')}
-          onChange={(e) => setApiHost(e.target.value)}
-          onBlur={onUpdateApiHost}
-        />
-        {!isEmpty(configedApiHost) && apiHost !== configedApiHost && (
-          <Button onClick={onReset}>{t('settings.provider.api.url.reset')}</Button>
-        )}
-      </Space.Compact>
-      {isOpenAIProvider(provider) && (
-        <SettingHelpTextRow style={{ justifyContent: 'space-between' }}>
-          <SettingHelpText style={{ marginLeft: 6 }}>{hostPreview()}</SettingHelpText>
-          <SettingHelpText>{t('settings.provider.api.url.tip')}</SettingHelpText>
-        </SettingHelpTextRow>
+      {provider.id !== 'sinbon' && (
+        <>
+          <SettingSubtitle>{t('settings.provider.api_host')}</SettingSubtitle>
+          <Space.Compact style={{ width: '100%', marginTop: 5 }}>
+            <Input
+              value={apiHost}
+              placeholder={t('settings.provider.api_host')}
+              onChange={(e) => setApiHost(e.target.value)}
+              onBlur={onUpdateApiHost}
+            />
+            {!isEmpty(configedApiHost) && apiHost !== configedApiHost && (
+              <Button onClick={onReset}>{t('settings.provider.api.url.reset')}</Button>
+            )}
+          </Space.Compact>
+          {isOpenAIProvider(provider) && (
+            <SettingHelpTextRow style={{ justifyContent: 'space-between' }}>
+              <SettingHelpText style={{ marginLeft: 6 }}>{hostPreview()}</SettingHelpText>
+              <SettingHelpText>{t('settings.provider.api.url.tip')}</SettingHelpText>
+            </SettingHelpTextRow>
+          )}
+        </>
       )}
       {provider.id === 'azure-openai' && (
         <>

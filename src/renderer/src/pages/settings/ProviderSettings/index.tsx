@@ -15,6 +15,7 @@ import ProviderSetting from './ProviderSetting'
 
 const ProvidersList: FC = () => {
   const providers = useAllProviders()
+  console.log(providers)
   const { updateProviders, addProvider, removeProvider, updateProvider } = useProviders()
   const [selectedProvider, setSelectedProvider] = useState<Provider>(providers[0])
   const { t } = useTranslation()

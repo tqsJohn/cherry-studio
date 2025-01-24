@@ -24,6 +24,16 @@ const initialState: LlmState = {
   translateModel: SYSTEM_MODELS.silicon[0],
   providers: [
     {
+      id: 'sinbon',
+      name: 'Sinbon',
+      type: 'openai',
+      apiKey: 'sk-XhyfRobCh3vQHnCYZT6CbQU181BxhTwCfAkP78Z9uqy2lul9',
+      apiHost: 'https://yunwu.ai',
+      models: SYSTEM_MODELS.sinbon,
+      isSystem: true,
+      enabled: true
+    },
+    {
       id: 'silicon',
       name: 'Silicon',
       type: 'openai',
